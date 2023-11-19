@@ -1,29 +1,56 @@
 program datatxt
 implicit none
 
-integer::i,iostatus,Nmax,r
-character(100),dimension(50)::town
-integer,dimension(50)::Average_Yearly_Rainfall
-Nmax=50
-r=0 !rows
+integer::i,iostatus,Nmax,l
+character(100),dimension(:),allocatable::T !mia sthlh me agnwsto arithmo grammwn
+integer,dimension(:),allocatable::R !omoiws
+l=0 !rows
 i=1 !counter
 open(10,file="data.txt",iostat=iostatus)
 do   	
   read(10,*,iostat=iostatus)
   if (iostatus/=0)exit !error opening the file
-  r=r+1 !counts the number of lines exist
-  !print*, r !result:20 rows with the titles
+  l=l+1 !counts the number of lines exist
+  !print*, l !result:20 rows with the titles
 end do
   rewind(10) !goes the file from the beginning
-if (r<=Nmax)then
-  read(10,*)
-  do i=1,r-1 !19 towns
-    read(10,*)town(i),Average_Yearly_Rainfall(i)
-    write(*,*)town(i),Average_Yearly_Rainfall(i)
-  end do
+
+print*, "Give the maximum number of lines you want: "
+read(*,*)Nmax
+if (Nmax<=l)then
+  allocate (T(Nmax))
+  allocate (R(Nmax))
+
+  call DATA_T_R(Nmax,T,R) !opou N tha valei to Nmax
+
+	do i=1,Nmax
+  		print*,T(i),R(i)
+	end do
+else if (Nmax>l) then
+  print*, "Many lines requested: Please enter a number under 20"
 else
   print*, "Error"
 end if
 
 close(10)
+
+
+
+contains
+
+subroutine DATA_T_R(N,T,R)
+implicit none
+
+integer::N,i,m
+character(100),dimension(N)::T
+integer,dimension(N)::R
+
+read(10,*)
+m=1
+	do i=1,N
+    	read(10,*)T(i),R(i)
+        m=m+1
+    end do
+    print*, "The number of lines requested were: ",N
+end subroutine DATA_T_R
 end program
