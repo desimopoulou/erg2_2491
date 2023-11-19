@@ -4,6 +4,7 @@ implicit none
 integer::i,iostatus,Nmax,l
 character(100),dimension(:),allocatable::T !mia sthlh me agnwsto arithmo grammwn
 integer,dimension(:),allocatable::R !omoiws
+
 l=0 !rows
 i=1 !counter
 open(10,file="data.txt",iostat=iostatus)
@@ -26,6 +27,7 @@ if (Nmax<=l)then
 	do i=1,Nmax
   		print*,T(i),R(i)
 	end do
+	print*, "The average amount of rainfall (in mm) is: ",Avg(Nmax,R)
 else if (Nmax>l) then
   print*, "Many lines requested: Please enter a number under 20"
 else
@@ -41,16 +43,31 @@ contains
 subroutine DATA_T_R(N,T,R)
 implicit none
 
-integer::N,i,m
+integer::N,i
 character(100),dimension(N)::T
 integer,dimension(N)::R
 
 read(10,*)
-m=1
+
 	do i=1,N
     	read(10,*)T(i),R(i)
-        m=m+1
     end do
     print*, "The number of lines requested were: ",N
 end subroutine DATA_T_R
+
+function Avg(N, R) result(Ravg)
+	implicit none
+    integer::k,i,N,Rsum
+    integer,dimension(N)::R
+    real::Ravg
+    k=0
+    i=1
+    Rsum=0
+    do i=1,N
+    k=k+1
+    Rsum=R(k)+Rsum
+    end do
+    Ravg=real(Rsum)/real(N)
+end function Avg
+
 end program
